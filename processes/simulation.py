@@ -1,5 +1,5 @@
 from copy import deepcopy
-from random import randint
+from random import randint, choice
 from process import (
     Process,
     ExecutingFirstComeFirstServedProcess,
@@ -9,7 +9,7 @@ from process import (
 )
 
 
-def random_queue(instance, quantity, min_time=0, max_time=1000):
+def random_processes(instance, quantity, min_time=0, max_time=1000):
     return [
         instance(randint(min_time, max_time), process_id)
         for process_id in range(quantity)
@@ -17,18 +17,30 @@ def random_queue(instance, quantity, min_time=0, max_time=1000):
 
 
 def test():
-    random_process_queue = random_queue(Process, 500)
-    fcfs = ExecutingFirstComeFirstServedProcess(
-        deepcopy(random_process_queue)
-    )
-    sjf = ExecutingShortestJobFirstProcess(
-        deepcopy(random_process_queue)
-    )
-    srtf = ExecutingShortestRemainingTimeFirstProcess(
-        deepcopy(random_process_queue)
-    )
-    fcfs = ExecutingRoundRobinProcess(
-        deepcopy(random_process_queue)
+    random_init_processes = random_processes(Process, 1)
+    random_incoming_processes = random_processes(Process, 5)
+
+    fcfs = ExecutingFirstComeFirstServedProcess()
+    # sjf = ExecutingShortestJobFirstProcess(
+    #     deepcopy(random_init_processes)
+    # )
+    # srtf = ExecutingShortestRemainingTimeFirstProcess(
+    #     deepcopy(random_init_processes)
+    # )
+    # rr = ExecutingRoundRobinProcess(
+    #     deepcopy(random_init_processes)
+    # )
+    while True:
+        fcfs.prints()
+        fcfs.outgoing_process()
+        if random_incoming_processes and choice([True, False]):
+            fcfs.incoming_process(random_incoming_processes.pop())
+        if not random_incoming_processes:
+            if fcfs.is_waiting:
+                break
+
+    print 'Wait time averange for FirstComeFirstServed algorithm: {}'.format(
+        fcfs.average_wait_time
     )
 
 
