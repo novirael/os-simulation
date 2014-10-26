@@ -29,9 +29,15 @@ class FirstInFirstOutQueue(object):
         except IndexError:
             return None
 
-    def get_queue(self, by_field='id'):
+    def get_queue(self, *fields):
+        if not fields:
+            fields = ['id']
         return [
-            getattr(obj, by_field) for obj in self._queue
+            {
+                field: getattr(obj, field)
+                for field in fields
+            }
+            for obj in self._queue
         ]
 
     def is_empty(self):

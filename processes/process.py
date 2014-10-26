@@ -1,5 +1,6 @@
+from __future__ import print_function
 import uuid
-from datetime import datetime
+from copy import copy
 
 from queue import (
     FirstInFirstOutQueue,
@@ -8,28 +9,39 @@ from queue import (
 
 
 class Process(object):
-    def __init__(self, time, id=None):
+    def __init__(self, time, timestamp, id=None):
         self.id = id or str(uuid.uuid4())[:5]
-        self.timestamp = datetime.now()
+        self.timestamp = timestamp
         self.executing_time = time
         self.wait_time = 0
 
 
-class ExecutingFirstComeFirstServedProcess(object):
+class ExecuteFirstComeFirstServedProcess(object):
     def __init__(self, queue=None):
         self.queue = FirstInFirstOutQueue(queue)
-        self.counter = len(queue) if queue else 0
-        self.summary_wait_time = 0
+        self.executed = []
+        self.counter = 0
 
-    def set_wait_time(self, process):
+    def set_wait_time(self, proc):
         wait_time = 0
+        for number, process in enumerate(self.queue, start=1):
+            if process == proc:
+                break
+            if number != len(self.queue):
+                wait_time += process.executing_time
+        proc.wait_time = wait_time
+
+    def set_wait_time_for_all(self):
+        self.queue.first.wait_time = 0
         for process in self.queue:
-            wait_time += process.executing_time
-        process.wait_time = wait_time
+            self.set_wait_time(process)
 
     @property
     def average_wait_time(self):
-        return self.summary_wait_time / self.counter
+        summary_wait_time = 0
+        for process in self.executed:
+            summary_wait_time += process.wait_time
+        return summary_wait_time / len(self.executed)
 
     def incoming_process(self, process):
         self.queue.enqueue(process)
@@ -37,28 +49,38 @@ class ExecutingFirstComeFirstServedProcess(object):
 
     def outgoing_process(self):
         if not self.queue.is_empty():
-            self.counter += 1
-            self.summary_wait_time += self.queue.first.wait_time
             self.queue.dequeue()
 
-    @property
-    def is_waiting(self):
-        return self.queue.is_empty()
+    def print_state(self, time):
+        print('fcfs', time)
+        for process in self.queue.get_queue('id', 'wait_time', 'executing_time'):
+            for desc, value in process.iteritems():
+                print('{}: {:2}  '.format(desc, value), end="")
+            print()
 
-    def prints(self):
-        print self.queue.get_queue('wait_time')
+    def step(self, process=None):
+        self.counter += 1
+
+        if process is not None:
+            self.incoming_process(process)
+            self.executed.append(copy(process))
+
+        if self.counter == self.queue.first.executing_time:
+            self.counter = 0
+            self.outgoing_process()
+            self.set_wait_time_for_all()
 
 
-class ExecutingShortestJobFirstProcess(object):
+class ExecuteShortestJobFirstProcess(object):
     def __init__(self, queue=None):
         self.queue = ShortestSeekFirstQueue('executing_time', queue)
 
 
-class ExecutingShortestRemainingTimeFirstProcess(object):
+class ExecuteShortestRemainingTimeFirstProcess(object):
     def __init__(self, queue=None):
         self.queue = ShortestSeekFirstQueue('executing_time', queue)
 
 
-class ExecutingRoundRobinProcess(object):
+class ExecuteRoundRobinProcess(object):
     def __init__(self, queue=None):
         self.queue = FirstInFirstOutQueue(queue)
