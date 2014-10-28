@@ -1,6 +1,5 @@
 from __future__ import print_function
 import uuid
-from copy import copy
 
 from queue import (
     FirstInFirstOutQueue,
@@ -19,8 +18,9 @@ class Process(object):
 class ExecuteFirstComeFirstServedProcess(object):
     def __init__(self, queue=None):
         self.queue = FirstInFirstOutQueue(queue)
-        self.executed = []
-        self.counter = 0
+        self.time_counter = 0
+        self.summary_wait_time = 0
+        self.summary_processes = 0
 
     def set_wait_time(self, proc):
         wait_time = 0
@@ -38,10 +38,7 @@ class ExecuteFirstComeFirstServedProcess(object):
 
     @property
     def average_wait_time(self):
-        summary_wait_time = 0
-        for process in self.executed:
-            summary_wait_time += process.wait_time
-        return summary_wait_time / len(self.executed)
+        return self.summary_wait_time / self.summary_processes
 
     def incoming_process(self, process):
         self.queue.enqueue(process)
@@ -59,14 +56,15 @@ class ExecuteFirstComeFirstServedProcess(object):
             print()
 
     def step(self, process=None):
-        self.counter += 1
+        self.time_counter += 1
 
         if process is not None:
             self.incoming_process(process)
-            self.executed.append(copy(process))
+            self.summary_wait_time += process.wait_time
+            self.summary_processes += 1
 
-        if self.counter == self.queue.first.executing_time:
-            self.counter = 0
+        if self.time_counter == self.queue.first.executing_time:
+            self.time_counter = 0
             self.outgoing_process()
             self.set_wait_time_for_all()
 

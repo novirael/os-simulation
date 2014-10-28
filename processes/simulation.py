@@ -45,7 +45,7 @@ def test():
         fcfs.step(process=new_process)
 
     print 'Wait time averange for FirstComeFirstServed: {}, {} proc'.format(
-        fcfs.average_wait_time, len(fcfs.executed)
+        fcfs.average_wait_time, fcfs.summary_processes
     )
 
 
