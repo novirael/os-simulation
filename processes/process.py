@@ -15,9 +15,9 @@ class Process(object):
         self.wait_time = 0
 
 
-class ExecuteFirstComeFirstServedProcess(object):
+class ExecuteProcess(object):
     def __init__(self, queue=None):
-        self.queue = FirstInFirstOutQueue(queue)
+        self.queue = None
         self.time_counter = 0
         self.summary_wait_time = 0
         self.summary_processes = 0
@@ -69,8 +69,15 @@ class ExecuteFirstComeFirstServedProcess(object):
             self.set_wait_time_for_all()
 
 
-class ExecuteShortestJobFirstProcess(object):
+class ExecuteFirstComeFirstServedProcess(ExecuteProcess):
     def __init__(self, queue=None):
+        super(ExecuteFirstComeFirstServedProcess, self).__init__(queue)
+        self.queue = FirstInFirstOutQueue(queue)
+
+
+class ExecuteShortestJobFirstProcess(ExecuteProcess):
+    def __init__(self, queue=None):
+        super(ExecuteShortestJobFirstProcess, self).__init__(queue)
         self.queue = ShortestSeekFirstQueue('executing_time', queue)
 
 

@@ -57,7 +57,8 @@ class ShortestSeekFirstQueue(Queue):
     """
     def __init__(self, sort_by='id', queue=None):
         self.sort_by = sort_by
-        if self._queue is not None:
+        self._queue = []
+        if queue is not None:
             self._queue = queue
             self._sort_by_field(self.sort_by)
 

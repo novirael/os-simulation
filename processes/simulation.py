@@ -30,12 +30,13 @@ def test():
     random_init_processes = random_processes(7)
 
     fcfs = ExecuteFirstComeFirstServedProcess()
-    # sjf = ExecuteShortestJobFirstProcess()
+    sjf = ExecuteShortestJobFirstProcess()
     # srtf = ExecuteShortestRemainingTimeFirstProcess()
     # rr = ExecuteRoundRobinProcess()
 
     for process in deepcopy(random_init_processes):
         fcfs.incoming_process(process)
+        sjf.incoming_process(process)
 
     for time_unit in range(1000):
         new_process = None
@@ -43,9 +44,13 @@ def test():
             new_process = random_processes(timestamp=time_unit)
 
         fcfs.step(process=new_process)
+        sjf.step(process=new_process)
 
     print 'Wait time averange for FirstComeFirstServed: {}, {} proc'.format(
         fcfs.average_wait_time, fcfs.summary_processes
+    )
+    print 'Wait time averange for ExecuteShortestJobFirstProcess: {}, {} proc'.format(
+        sjf.average_wait_time, sjf.summary_processes
     )
 
 
