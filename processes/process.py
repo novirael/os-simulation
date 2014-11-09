@@ -32,9 +32,10 @@ class ExecuteProcess(object):
         proc.wait_time = wait_time
 
     def set_wait_time_for_all(self):
-        self.queue.first.wait_time = 0
-        for process in self.queue:
-            self.set_wait_time(process)
+        if not self.queue.is_empty():
+            self.queue.first.wait_time = 0
+            for process in self.queue:
+                self.set_wait_time(process)
 
     @property
     def average_wait_time(self):
@@ -45,8 +46,8 @@ class ExecuteProcess(object):
         self.set_wait_time(process)
 
     def outgoing_process(self):
-        if not self.queue.is_empty():
-            self.queue.dequeue()
+        self.queue.dequeue()
+        self.set_wait_time_for_all()
 
     def print_state(self, time):
         print('fcfs', time)
@@ -63,10 +64,10 @@ class ExecuteProcess(object):
             self.summary_wait_time += process.wait_time
             self.summary_processes += 1
 
-        if self.time_counter == self.queue.first.executing_time:
-            self.time_counter = 0
-            self.outgoing_process()
-            self.set_wait_time_for_all()
+        if not self.queue.is_empty():
+            if self.time_counter >= self.queue.first.executing_time:
+                self.time_counter = 0
+                self.outgoing_process()
 
 
 class ExecuteFirstComeFirstServedProcess(ExecuteProcess):
@@ -78,12 +79,21 @@ class ExecuteFirstComeFirstServedProcess(ExecuteProcess):
 class ExecuteShortestJobFirstProcess(ExecuteProcess):
     def __init__(self, queue=None):
         super(ExecuteShortestJobFirstProcess, self).__init__(queue)
-        self.queue = ShortestSeekFirstQueue('executing_time', queue)
+        self.queue = ShortestSeekFirstQueue('executing_time', queue, False)
 
 
-class ExecuteShortestRemainingTimeFirstProcess(object):
+class ExecuteShortestRemainingTimeFirstProcess(ExecuteProcess):
     def __init__(self, queue=None):
+        super(ExecuteShortestRemainingTimeFirstProcess, self).__init__(queue)
         self.queue = ShortestSeekFirstQueue('executing_time', queue)
+
+    def incoming_process(self, process):
+        if not self.queue.is_empty():
+            remaining_time = self.queue.first.executing_time - self.time_counter
+            if process.executing_time < remaining_time:
+                self.queue.first.executing_time = remaining_time
+        super(ExecuteShortestRemainingTimeFirstProcess, self).\
+            incoming_process(process)
 
 
 class ExecuteRoundRobinProcess(object):

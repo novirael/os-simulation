@@ -55,9 +55,10 @@ class ShortestSeekFirstQueue(Queue):
     """
     Base interface for ssf queue based on python list
     """
-    def __init__(self, sort_by='id', queue=None):
+    def __init__(self, sort_by='id', queue=None, sort_first_obj=True):
         self.sort_by = sort_by
         self._queue = []
+        self.sort_first_obj = sort_first_obj
         if queue is not None:
             self._queue = queue
             self._sort_by_field(self.sort_by)
@@ -72,4 +73,9 @@ class ShortestSeekFirstQueue(Queue):
         return None
 
     def _sort_by_field(self, field_name):
-        self._queue.sort(key=lambda obj: getattr(obj, field_name))
+        if self.sort_first_obj:
+            self._queue.sort(key=lambda obj: getattr(obj, field_name))
+        else:
+            head, tail = self._queue[0], self._queue[1:]
+            self._queue = [head] + sorted(tail)
+
