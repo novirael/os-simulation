@@ -96,6 +96,29 @@ class ExecuteShortestRemainingTimeFirstProcess(ExecuteProcess):
             incoming_process(process)
 
 
-class ExecuteRoundRobinProcess(object):
-    def __init__(self, queue=None):
+class ExecuteRoundRobinProcess(ExecuteProcess):
+    def __init__(self, quantum, queue=None):
+        super(ExecuteRoundRobinProcess, self).__init__(queue)
         self.queue = FirstInFirstOutQueue(queue)
+        self.quantum = quantum
+
+    def outgoing_process(self):
+        remaining_time = self.queue.first.executing_time - self.quantum
+        if remaining_time > 0:
+            self.queue.first.executing_time = remaining_time
+            first_process = self.queue.first
+            self.queue.enqueue(first_process)
+        super(ExecuteRoundRobinProcess, self).outgoing_process()
+
+    def step(self, process=None):
+        self.time_counter += 1
+
+        if process is not None:
+            self.incoming_process(process)
+            self.summary_wait_time += process.wait_time
+            self.summary_processes += 1
+
+        if self.time_counter == self.quantum:
+            self.time_counter = 0
+            if not self.queue.is_empty():
+                self.outgoing_process()
