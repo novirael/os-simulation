@@ -74,18 +74,21 @@ class ExecuteFirstComeFirstServedProcess(ExecuteProcess):
     def __init__(self, queue=None):
         super(ExecuteFirstComeFirstServedProcess, self).__init__(queue)
         self.queue = FirstInFirstOutQueue(queue)
+        self.title = 'First Come First Served Algorithm'
 
 
 class ExecuteShortestJobFirstProcess(ExecuteProcess):
     def __init__(self, queue=None):
         super(ExecuteShortestJobFirstProcess, self).__init__(queue)
         self.queue = ShortestSeekFirstQueue('executing_time', queue, False)
+        self.title = 'Shortest Job First Algorithm'
 
 
 class ExecuteShortestRemainingTimeFirstProcess(ExecuteProcess):
     def __init__(self, queue=None):
         super(ExecuteShortestRemainingTimeFirstProcess, self).__init__(queue)
         self.queue = ShortestSeekFirstQueue('executing_time', queue)
+        self.title = 'Shortest Remaining Time First Algorithm'
 
     def incoming_process(self, process):
         if not self.queue.is_empty():
@@ -100,6 +103,7 @@ class ExecuteRoundRobinProcess(ExecuteProcess):
     def __init__(self, quantum, queue=None):
         super(ExecuteRoundRobinProcess, self).__init__(queue)
         self.queue = FirstInFirstOutQueue(queue)
+        self.title = 'Round Robin Algorithm'
         self.quantum = quantum
 
     def outgoing_process(self):

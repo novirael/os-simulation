@@ -8,8 +8,11 @@ from process import (
     ExecuteRoundRobinProcess
 )
 
+MAX_SIMULATION_TIME = 1000
+
 MIN_EXECUTING_TIME = 5
 MAX_EXECUTING_TIME = 10
+
 QUANTUM = 8
 
 
@@ -36,33 +39,23 @@ def test():
     rr = ExecuteRoundRobinProcess(quantum=QUANTUM)
 
     for process in deepcopy(random_init_processes):
-        fcfs.incoming_process(process)
-        sjf.incoming_process(process)
-        srtf.incoming_process(process)
-        rr.incoming_process(process)
+        for alg in [fcfs, sjf, srtf, rr]:
+            alg.incoming_process(process)
 
-    for time_unit in range(1000):
+    for time_unit in range(MAX_SIMULATION_TIME):
         new_process = None
         if choice([True, False, False, False]):
             new_process = random_processes(timestamp=time_unit)
 
-        fcfs.step(process=new_process)
-        sjf.step(process=new_process)
-        srtf.step(process=new_process)
-        rr.step(process=new_process)
+        for alg in [fcfs, sjf, srtf, rr]:
+            alg.step(process=new_process)
 
-    print 'Wait time averange for FirstComeFirstServed: {}, {} proc'.format(
-        fcfs.average_wait_time, fcfs.summary_processes
-    )
-    print 'Wait time averange for ExecuteShortestJobFirstProcess: {}, {} proc'.format(
-        sjf.average_wait_time, sjf.summary_processes
-    )
-    print 'Wait time averange for ExecuteShortestRemainingTimeFirstProcess: {}, {} proc'.format(
-        srtf.average_wait_time, sjf.summary_processes
-    )
-    print 'Wait time averange for ExecuteRoundRobinProcess: {}, {} proc'.format(
-        rr.average_wait_time, sjf.summary_processes
-    )
+    for alg in [fcfs, sjf, srtf, rr]:
+        print 'Wait time average for {title}: {wait_time}, {number} proc'.format(
+            title=alg.title,
+            wait_time=alg.average_wait_time,
+            number=alg.summary_processes
+        )
 
 
 if __name__ == "__main__":
