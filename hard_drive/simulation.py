@@ -20,8 +20,7 @@ def prepare_initial_buffer():
 
 
 def test():
-    initial_buffer = sample(range(MAX_BUFFER_SIZE), 40)
-    print initial_buffer
+    initial_buffer = sample(range(MAX_BUFFER_SIZE), 20)
     algorithms = [
         FirstComeFirstServedAlgorithm(deepcopy(initial_buffer)),
         ShortestSeekTimeFirstAlgorithm(deepcopy(initial_buffer)),
@@ -34,7 +33,12 @@ def test():
             alg.step()
 
     for alg in algorithms:
-        print alg.average_wait_time
+        print 'Wait time average for {title}:'.format(title=alg.title)
+        print '{wait_time} average, {req} requests, {motions} motions'.format(
+            wait_time=alg.average_wait_time,
+            req=alg.counter['finished_request'],
+            motions=alg.counter['motions'],
+        )
 
 if __name__ == "__main__":
     test()

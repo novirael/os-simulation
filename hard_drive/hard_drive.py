@@ -31,6 +31,9 @@ class BaseAccessAlgorithm(object):
 
 
 class FirstComeFirstServedAlgorithm(BaseAccessAlgorithm):
+    def __init__(self, initial_buffer):
+        super(FirstComeFirstServedAlgorithm, self).__init__(initial_buffer)
+        self.title = 'First Come First Served Algorithm'
 
     def step(self):
         if self.buffer:
@@ -38,6 +41,9 @@ class FirstComeFirstServedAlgorithm(BaseAccessAlgorithm):
 
 
 class ShortestSeekTimeFirstAlgorithm(BaseAccessAlgorithm):
+    def __init__(self, initial_buffer):
+        super(ShortestSeekTimeFirstAlgorithm, self).__init__(initial_buffer)
+        self.title = 'Shortest Seek Time First Algorithm'
 
     def _get_the_nearest(self):
         return min(self.buffer, key=lambda x: abs(x-self.pointer))
@@ -50,6 +56,7 @@ class ShortestSeekTimeFirstAlgorithm(BaseAccessAlgorithm):
 class ElevatorAlgorithm(BaseAccessAlgorithm):
     def __init__(self, initial_buffer):
         super(ElevatorAlgorithm, self).__init__(initial_buffer)
+        self.title = 'Elevator Algorithm (SCAN)'
         self.to_left = True
 
     def step(self):
@@ -78,6 +85,9 @@ class ElevatorAlgorithm(BaseAccessAlgorithm):
 
 
 class CircularElevatorAlgorithm(BaseAccessAlgorithm):
+    def __init__(self, initial_buffer):
+        super(CircularElevatorAlgorithm, self).__init__(initial_buffer)
+        self.title = 'Circular Elevator Algorithm (C-SCAN)'
 
     def step(self):
         if self.buffer:
