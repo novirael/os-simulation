@@ -20,13 +20,13 @@ def prepare_initial_buffer():
 
 
 def test():
-    initial_buffer = sample(range(MAX_BUFFER_SIZE), 20)
+    initial_buffer = sample(range(MAX_BUFFER_SIZE), 40)
     print initial_buffer
     algorithms = [
         FirstComeFirstServedAlgorithm(deepcopy(initial_buffer)),
         ShortestSeekTimeFirstAlgorithm(deepcopy(initial_buffer)),
-        # ElevatorAlgorithm(deepcopy(initial_buffer)),
-        # CircularElevatorAlgorithm(deepcopy(initial_buffer))
+        ElevatorAlgorithm(deepcopy(initial_buffer)),
+        CircularElevatorAlgorithm(deepcopy(initial_buffer))
     ]
 
     for time_unit in range(MAX_SIMULATION_TIME):
@@ -34,7 +34,7 @@ def test():
             alg.step()
 
     for alg in algorithms:
-        print alg.counter
+        print alg.average_wait_time
 
 if __name__ == "__main__":
     test()
