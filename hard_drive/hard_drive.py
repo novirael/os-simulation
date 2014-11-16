@@ -35,7 +35,9 @@ class FirstComeFirstServedAlgorithm(BaseAccessAlgorithm):
         super(FirstComeFirstServedAlgorithm, self).__init__(initial_buffer)
         self.title = 'First Come First Served Algorithm'
 
-    def step(self):
+    def step(self, new_request=None):
+        if new_request is not None:
+            self.buffer.append(new_request)
         if self.buffer:
             self.motion(self.buffer[0])
 
@@ -48,7 +50,9 @@ class ShortestSeekTimeFirstAlgorithm(BaseAccessAlgorithm):
     def _get_the_nearest(self):
         return min(self.buffer, key=lambda x: abs(x-self.pointer))
 
-    def step(self):
+    def step(self, new_request=None):
+        if new_request is not None:
+            self.buffer.append(new_request)
         if self.buffer:
             self.motion(self._get_the_nearest())
 
@@ -59,11 +63,13 @@ class ElevatorAlgorithm(BaseAccessAlgorithm):
         self.title = 'Elevator Algorithm (SCAN)'
         self.to_left = True
 
-    def step(self):
+    def step(self, new_request=None):
+        if new_request is not None:
+            self.buffer.append(new_request)
         if self.buffer:
             self.motion()
 
-    def motion(self):
+    def motion(self, new_request=None):
         if self.pointer in self.buffer:
             self.buffer.remove(self.pointer)
             self.counter['finished_request'] += 1
@@ -89,7 +95,9 @@ class CircularElevatorAlgorithm(BaseAccessAlgorithm):
         super(CircularElevatorAlgorithm, self).__init__(initial_buffer)
         self.title = 'Circular Elevator Algorithm (C-SCAN)'
 
-    def step(self):
+    def step(self, new_request=None):
+        if new_request is not None:
+            self.buffer.append(new_request)
         if self.buffer:
             self.motion()
 

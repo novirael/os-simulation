@@ -14,9 +14,17 @@ MAX_BUFFER_SIZE = 100
 def prepare_initial_buffer():
     _buffer = []
     for position in range(MAX_BUFFER_SIZE):
-        if choice([False*10, True, False*0]):
+        if choice([False*10, True]):
             _buffer.append(position)
     return _buffer
+
+
+def random_request(buff):
+    if choice([False*10, True]):
+        random_sector = randint(0, MAX_BUFFER_SIZE)
+        if random_sector not in buff:
+            return random_sector
+    return None
 
 
 def test():
@@ -30,7 +38,8 @@ def test():
 
     for time_unit in range(MAX_SIMULATION_TIME):
         for alg in algorithms:
-            alg.step()
+            new_request = random_request(alg.buffer)
+            alg.step(new_request)
 
     for alg in algorithms:
         print 'Wait time average for {title}:'.format(title=alg.title)
