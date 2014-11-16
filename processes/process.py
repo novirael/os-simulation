@@ -50,13 +50,14 @@ class ExecuteProcess(object):
         self.set_wait_time_for_all()
 
     def print_state(self, time):
-        print('fcfs', time)
+        print('time', time)
         for process in self.queue.get_queue('id', 'wait_time', 'executing_time'):
             for desc, value in process.iteritems():
                 print('{}: {:2}  '.format(desc, value), end="")
             print()
 
     def step(self, process=None):
+        self.set_wait_time_for_all()
         self.time_counter += 1
 
         if process is not None:
@@ -115,6 +116,7 @@ class ExecuteRoundRobinProcess(ExecuteProcess):
         super(ExecuteRoundRobinProcess, self).outgoing_process()
 
     def step(self, process=None):
+        self.set_wait_time_for_all()
         self.time_counter += 1
 
         if process is not None:
