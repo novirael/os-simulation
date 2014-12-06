@@ -12,7 +12,7 @@ from memory import (
 PAGE_SIZE = 100
 FRAMES = 10
 
-NUM_REQUESTS = 100
+NUM_REQUESTS = 500
 
 
 def test():
@@ -20,7 +20,7 @@ def test():
     algorithms = [
         FirstInFirstOutAlgorithm(copy(query), FRAMES),
         TheOptimalAlgorithm(copy(query), FRAMES),
-        # LastRecentlyUsedAlgorithm(),
+        LastRecentlyUsedAlgorithm(copy(query), FRAMES),
         # ApproximalLastRecentlyUsedAlgorithm(),
         RandomAlgorithm(copy(query), FRAMES)
     ]

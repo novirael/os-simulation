@@ -20,11 +20,10 @@ class BaseAlgorithm(object):
                 self.step(request)
 
     def step(self, request):
-        if len(self.frames) <= self.num_frames:
-            self.frames.append(request)
-        else:
+        if len(self.frames) >= self.num_frames:
             self.remove_page()
             self.page_faults += 1
+        self.frames.append(request)
 
     def remove_page(self):
         raise NotImplementedError
@@ -56,8 +55,18 @@ class TheOptimalAlgorithm(BaseAlgorithm):
         return src_index[0]
 
 
-class LastRecentlyUsedAlgorithm(object):
-    pass
+class LastRecentlyUsedAlgorithm(BaseAlgorithm):
+    def execute(self):
+        while self.query:
+            request = self.query.pop(0)
+            if request not in self.frames:
+                self.step(request)
+            else:
+                self.frames.remove(request)
+                self.frames.append(request)
+
+    def remove_page(self):
+        del self.frames[0]
 
 
 class ApproximalLastRecentlyUsedAlgorithm(object):
