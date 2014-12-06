@@ -1,5 +1,5 @@
 import re
-from random import choice, randint
+from random import choice
 
 
 class BaseAlgorithm(object):
@@ -24,17 +24,36 @@ class BaseAlgorithm(object):
             self.frames.append(request)
         else:
             self.remove_page()
+            self.page_faults += 1
 
     def remove_page(self):
         raise NotImplementedError
 
 
-class FirstInFirstOutAlgorithm(object):
-    pass
+class FirstInFirstOutAlgorithm(BaseAlgorithm):
+    def remove_page(self):
+        del self.frames[0]
 
 
-class TheOptimalAlgorithm(object):
-    pass
+class TheOptimalAlgorithm(BaseAlgorithm):
+    def remove_page(self):
+        index = self.get_index()
+        del self.frames[index]
+
+    def get_index(self):
+        # src_index = (frame_index, query_index)
+        src_index = (0, 0)
+
+        for i, el in enumerate(self.frames):
+            try:
+                query_index = self.query.index(el)
+            except ValueError:
+                return i
+
+            if query_index > src_index[1]:
+                src_index = (i, query_index)
+
+        return src_index[0]
 
 
 class LastRecentlyUsedAlgorithm(object):
@@ -49,4 +68,3 @@ class RandomAlgorithm(BaseAlgorithm):
     def remove_page(self):
         rand_page = choice(self.frames)
         self.frames.remove(rand_page)
-        self.page_faults += 1

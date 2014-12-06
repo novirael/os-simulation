@@ -1,4 +1,6 @@
+from copy import copy
 from random import randint
+
 from memory import (
     FirstInFirstOutAlgorithm,
     TheOptimalAlgorithm,
@@ -16,11 +18,11 @@ NUM_REQUESTS = 100
 def test():
     query = [randint(1, PAGE_SIZE+1) for _ in range(NUM_REQUESTS)]
     algorithms = [
-        # FirstInFirstOutAlgorithm(),
-        # TheOptimalAlgorithm(),
+        FirstInFirstOutAlgorithm(copy(query), FRAMES),
+        TheOptimalAlgorithm(copy(query), FRAMES),
         # LastRecentlyUsedAlgorithm(),
         # ApproximalLastRecentlyUsedAlgorithm(),
-        RandomAlgorithm(query, FRAMES)
+        RandomAlgorithm(copy(query), FRAMES)
     ]
 
     for alg in algorithms:
