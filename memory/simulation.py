@@ -1,26 +1,35 @@
-from memory.memory import (
+from random import randint
+from memory import (
     FirstInFirstOutAlgorithm,
     TheOptimalAlgorithm,
     LastRecentlyUsedAlgorithm,
-    ApproximalLastRecentlyUsedAlgorithm
+    ApproximalLastRecentlyUsedAlgorithm,
+    RandomAlgorithm
 )
 
 PAGE_SIZE = 100
 FRAMES = 10
 
-NUM_REQUESTS = 500
+NUM_REQUESTS = 100
 
 
 def test():
+    query = [randint(1, PAGE_SIZE+1) for _ in range(NUM_REQUESTS)]
     algorithms = [
-        FirstInFirstOutAlgorithm(),
-        TheOptimalAlgorithm(),
-        LastRecentlyUsedAlgorithm(),
-        ApproximalLastRecentlyUsedAlgorithm()
+        # FirstInFirstOutAlgorithm(),
+        # TheOptimalAlgorithm(),
+        # LastRecentlyUsedAlgorithm(),
+        # ApproximalLastRecentlyUsedAlgorithm(),
+        RandomAlgorithm(query, FRAMES)
     ]
 
+    for alg in algorithms:
+        alg.execute()
+        print 'Page faults for {title}: {faults}/{requests}'.format(
+            title=alg.title,
+            faults=alg.page_faults,
+            requests=NUM_REQUESTS
+        )
 
 if __name__ == "__main__":
     test()
-
-# spr czy jest w ramkach
