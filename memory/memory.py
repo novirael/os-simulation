@@ -8,6 +8,7 @@ class BaseAlgorithm(object):
         self.frames = []
         self.num_frames = num_frames
         self.page_faults = 0
+        self.is_order = False
 
     @property
     def title(self):
@@ -18,6 +19,9 @@ class BaseAlgorithm(object):
             request = self.query.pop(0)
             if request not in self.frames:
                 self.step(request)
+            elif self.is_order:
+                self.frames.remove(request)
+                self.frames.append(request)
 
     def step(self, request):
         if len(self.frames) >= self.num_frames:
@@ -56,21 +60,48 @@ class TheOptimalAlgorithm(BaseAlgorithm):
 
 
 class LastRecentlyUsedAlgorithm(BaseAlgorithm):
-    def execute(self):
-        while self.query:
-            request = self.query.pop(0)
-            if request not in self.frames:
-                self.step(request)
-            else:
-                self.frames.remove(request)
-                self.frames.append(request)
+    def __init__(self, query, num_frames):
+        super(LastRecentlyUsedAlgorithm, self).__init__(query, num_frames)
+        self.is_order = True
 
     def remove_page(self):
         del self.frames[0]
 
 
-class ApproximalLastRecentlyUsedAlgorithm(object):
-    pass
+class ApproximalLastRecentlyUsedAlgorithm(BaseAlgorithm):
+    def __init__(self, query, num_frames):
+        super(ApproximalLastRecentlyUsedAlgorithm, self).__init__(query, num_frames)
+        self.is_order = True
+
+    def execute(self):
+        while self.query:
+            request = self.query.pop(0)
+            if request not in [el for (el, _) in self.frames]:
+                self.step(request)
+            elif self.is_order:
+                fr = [el for (el, _) in self.frames]
+                item = self.frames[fr.index(request)]
+                self.frames.remove(item)
+                self.frames.append(item)
+
+    def step(self, request):
+        if len(self.frames) >= self.num_frames:
+            self.remove_page()
+            self.page_faults += 1
+        self.frames.append((request, 1))
+
+    def remove_page(self):
+        i = 0
+        while True:
+            el, bit = self.frames[i]
+            if bit == 1:
+                self.frames[i] = (el, 0)
+            else:
+                self.frames.remove((el, bit))
+                break
+            i += 1
+            if i >= len(self.frames):
+                i = 0
 
 
 class RandomAlgorithm(BaseAlgorithm):
