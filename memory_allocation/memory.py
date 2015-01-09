@@ -1,7 +1,7 @@
 import re
 
 
-class BaseAlgorithm(object):
+class LastRecentlyUsedAlgorithm(object):
     def __init__(self, query, num_frames):
         self.query = query
         self.frames = []

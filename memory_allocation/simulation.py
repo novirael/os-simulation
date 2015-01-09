@@ -1,48 +1,25 @@
-from copy import copy
-from random import randint
-
-from memory import LastRecentlyUsedAlgorithm
-
-PAGE_SIZE = 100
-FRAMES = 10
-
-NUM_REQUESTS = 1000
+# from memory_allocation.memory import LastRecentlyUsedAlgorithm
+from memory_allocation.memory_allocation import MemoryAllocationSimulation
+from memory_allocation.processes import proportional, equal
 
 
-def test(page_size, frames_size, num_requests, draw=False):
+def test():
     summary = {}
+    proportional_simulation = MemoryAllocationSimulation(proportional)
+    equalts_simulation = MemoryAllocationSimulation(equal)
 
-    query = [randint(1, page_size+1) for _ in range(num_requests)]
-    lru = LastRecentlyUsedAlgorithm(copy(query), frames_size)
-    allocations = []
-
-    lru.execute()
-    if draw:
-        print 'Page faults for {title}: {faults}/{requests}'.format(
-            title=lru.title,
-            faults=lru.page_faults,
-            requests=num_requests
-        )
-    summary[lru.title] = lru.page_faults
+    # lru = LastRecentlyUsedAlgorithm(query, frames_size)
+    #
+    # lru.execute()
+    # print 'Page faults for {title}: {faults}/{requests}'.format(
+    #     title=lru.title,
+    #     faults=lru.page_faults,
+    #     requests=num_requests
+    # )
+    # summary[lru.title] = lru.page_faults
 
     return summary
 
 
-def statistic(frames, times=50):
-    stat = {}
-
-    for i in range(times):
-        results = test(PAGE_SIZE, frames, NUM_REQUESTS)
-
-        if not stat:
-            stat = copy(results)
-        else:
-            for alg, result in results.iteritems():
-                stat[alg] += result
-
-    print stat
-
 if __name__ == "__main__":
-    # test(PAGE_SIZE, FRAMES, NUM_REQUESTS, draw=True)
-    for frames in [10, 20, 30, 40]:
-        statistic(frames)
+    test()
