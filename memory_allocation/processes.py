@@ -1,5 +1,6 @@
 from random import randint
 
+
 proportional = {
     'proc1': {
         'first_page': 1,
@@ -52,6 +53,19 @@ proportional = {
         'frames': 15
     },
 }
+
+
+def get_proportional_processes(number, times, min_frame_size, max_frame_size):
+    proportional = {}
+    for i in range(number):
+        frame_size = randint(min_frame_size, max_frame_size)
+        pages_size = frame_size * times
+        proportional['proc{}'.format(i)] = {
+            'first_page': i * pages_size + 1,
+            'last_page': (i + 1) * pages_size,
+            'frames': frame_size
+        }
+    return proportional
 
 
 def get_equal_processes(number, pages_size, min_frame_size, max_frame_size):

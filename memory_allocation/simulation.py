@@ -1,15 +1,15 @@
 from memory_allocation import MemoryAllocationSimulation
-from processes import proportional, get_equal_processes
+from processes import get_proportional_processes, get_equal_processes
 
 
 def test():
     summary = {}
     simulations = {
         'Proportional Simulation': MemoryAllocationSimulation(
-            proportional
+            get_proportional_processes(10, 30, 10, 10)
         ),
         'Equals Simulation': MemoryAllocationSimulation(
-            get_equal_processes(10, 30, 10, 10)
+            get_equal_processes(10, 20, 10, 10)
         )
     }
     for name, simulation in simulations.iteritems():
