@@ -1,26 +1,26 @@
-# from memory_allocation.memory import LastRecentlyUsedAlgorithm
-from memory_allocation import MemoryAllocationSimulation
-from processes import proportional, \
-    get_equal_processes
+from memory_allocation.memory_allocation import MemoryAllocationSimulation
+from processes import proportional, get_equal_processes
 
 
 def test():
     summary = {}
-    proportional_simulation = MemoryAllocationSimulation(proportional)
-    equalts_simulation = (#MemoryAllocationSimulation(
-        get_equal_processes(10, 25, 15)
-    )
-    print equalts_simulation
+    simulations = {
+        'Proportional Simulation': MemoryAllocationSimulation(
+            proportional
+        ),
+        'Equals Simulation': MemoryAllocationSimulation(
+            get_equal_processes(10, 25, 15)
+        )
+    }
+    for name, simulation in simulations.iteritems():
+        simulation.execute()
 
-    # lru = LastRecentlyUsedAlgorithm(query, frames_size)
-    #
-    # lru.execute()
-    # print 'Page faults for {title}: {faults}/{requests}'.format(
-    #     title=lru.title,
-    #     faults=lru.page_faults,
-    #     requests=num_requests
-    # )
-    # summary[lru.title] = lru.page_faults
+        print 'Page faults for {title}: {faults}/{requests}'.format(
+            title=name,
+            faults=simulation.page_faults,
+            requests=simulation.num_requests_per_process
+        )
+        summary[name] = simulation.page_faults
 
     return summary
 

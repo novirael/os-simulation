@@ -8,10 +8,9 @@ NUM_REQUESTS_PER_PROCESS = 1000
 
 class MemoryAllocationSimulation():
     def __init__(self, processes):
-        self.page_size = 100
-        self.frames = 10
-        self.number_processes = 10
         self.processes = processes
+        self.num_requests_per_process = NUM_REQUESTS_PER_PROCESS
+        self.page_faults = 0
         self.set_query()
 
     def set_query(self):
@@ -20,7 +19,7 @@ class MemoryAllocationSimulation():
                 details['first_page'],
                 details['last_page'],
                 details['frames'],
-                NUM_REQUESTS_PER_PROCESS
+                self.num_requests_per_process
             )
 
     @staticmethod
@@ -42,3 +41,6 @@ class MemoryAllocationSimulation():
                 if last_page >= page >= first_page:
                     result.append(page)
         return result
+
+    def execute(self):
+        pass
