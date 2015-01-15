@@ -54,11 +54,11 @@ proportional = {
 }
 
 
-def get_equal_processes(number, pages_size, max_frame_size):
+def get_equal_processes(number, pages_size, min_frame_size, max_frame_size):
     return {
         'proc{}'.format(i): {
             'first_page': i * pages_size + 1,
             'last_page': (i + 1) * pages_size,
-            'frames': randint(1, max_frame_size)
+            'frames': randint(min_frame_size, max_frame_size)
         } for i in range(number)
     }

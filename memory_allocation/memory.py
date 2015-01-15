@@ -13,13 +13,12 @@ class LastRecentlyUsedAlgorithm(object):
         return re.sub(r'([^A-Z])([A-Z])', r'\1 \2', self.__class__.__name__)
 
     def execute(self):
-        while self.query:
-            request = self.query.pop(0)
-            if request not in self.frames:
-                self.step(request)
-            else:
-                self.frames.remove(request)
-                self.frames.append(request)
+        request = self.query.pop(0)
+        if request not in self.frames:
+            self.step(request)
+        else:
+            self.frames.remove(request)
+            self.frames.append(request)
 
     def step(self, request):
         if len(self.frames) >= self.num_frames:
