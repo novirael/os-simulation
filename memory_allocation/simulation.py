@@ -1,12 +1,16 @@
 # from memory_allocation.memory import LastRecentlyUsedAlgorithm
-from memory_allocation.memory_allocation import MemoryAllocationSimulation
-from memory_allocation.processes import proportional, equal
+from memory_allocation import MemoryAllocationSimulation
+from processes import proportional, \
+    get_equal_processes
 
 
 def test():
     summary = {}
     proportional_simulation = MemoryAllocationSimulation(proportional)
-    equalts_simulation = MemoryAllocationSimulation(equal)
+    equalts_simulation = (#MemoryAllocationSimulation(
+        get_equal_processes(10, 25, 15)
+    )
+    print equalts_simulation
 
     # lru = LastRecentlyUsedAlgorithm(query, frames_size)
     #

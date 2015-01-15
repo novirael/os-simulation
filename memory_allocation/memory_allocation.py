@@ -16,14 +16,12 @@ class MemoryAllocationSimulation():
 
     def set_query(self):
         for details in self.processes.values():
-            print details
             details['query'] = self.get_query(
                 details['first_page'],
                 details['last_page'],
                 details['frames'],
                 NUM_REQUESTS_PER_PROCESS
             )
-            print details['query']
 
     @staticmethod
     def get_query(first_page, last_page, frames_size, query_size):
