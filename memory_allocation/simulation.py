@@ -5,11 +5,11 @@ from processes import get_proportional_processes, get_equal_processes
 def test():
     summary = {}
     simulations = {
-        'Proportional Simulation': MemoryAllocationSimulation(
-            get_proportional_processes(10, 30, 10, 10)
-        ),
         'Equals Simulation': MemoryAllocationSimulation(
-            get_equal_processes(10, 20, 10, 10)
+            get_equal_processes(10, 30, 10, 10)
+        ),
+        'Proportional Simulation': MemoryAllocationSimulation(
+            get_proportional_processes(10, 3, 5, 15)
         )
     }
     for name, simulation in simulations.iteritems():
