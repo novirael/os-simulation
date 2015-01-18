@@ -9,8 +9,9 @@ NUM_REQUESTS_PER_PROCESS = 1000
 
 
 class MemoryAllocationSimulation():
-    def __init__(self, processes):
+    def __init__(self, processes, page_faults_control=False):
         self.processes = processes
+        self.page_faults_control = page_faults_control
         self.num_requests_per_process = NUM_REQUESTS_PER_PROCESS
         self.num_requests = self.num_requests_per_process * len(processes)
         self.set_query()
