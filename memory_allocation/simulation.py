@@ -1,3 +1,4 @@
+from copy import deepcopy
 from memory_allocation import MemoryAllocationSimulation
 from processes import get_proportional_processes, get_equal_processes
 
@@ -7,10 +8,10 @@ def test():
     equal = get_equal_processes(10, 30, 10, 10)
     proportional = get_proportional_processes(10, 3, 5, 15)
     simulations = {
-        'Equals Simulation': MemoryAllocationSimulation(equal),
+        'Equals Simulation': MemoryAllocationSimulation(deepcopy(equal)),
         'Proportional Simulation': MemoryAllocationSimulation(proportional),
         'Page faults control Simulation': MemoryAllocationSimulation(
-            equal,
+            deepcopy(equal),
             page_faults_control=True
         )
     }
