@@ -1,6 +1,7 @@
 import uuid
 
 from random import choice
+import re
 
 
 class Process(object):
@@ -63,6 +64,10 @@ class BaseProcessAllocationStrategy(object):
         self.query = query
         self.retry = retry
 
+    @property
+    def title(self):
+        return re.sub(r'([^A-Z])([A-Z])', r'\1 \2', self.__class__.__name__)
+
     def get_random_processor(self, current_processor=None):
         if current_processor is None:
             return choice(self.processors)
@@ -76,7 +81,7 @@ class BaseProcessAllocationStrategy(object):
 
     def outgoing_process(self):
         for processor in self.processors:
-            if processor.executing_query:
+            if processor.executing_query and choice([True, False, False]):
                 processor.executing_query.pop(0)
 
     def print_result(self):
@@ -86,6 +91,19 @@ class BaseProcessAllocationStrategy(object):
             print 'Migrations: %d' % processor.qua_migration
             print 'Load average: %d' % processor.load_average
         print '\n'
+
+    def get_result(self):
+        result = {
+            'queries': 0,
+            'migrations': 0,
+            'load': 0
+        }
+        for processor in self.processors:
+            result['queries'] += processor.qua_query
+            result['migrations'] += processor.qua_migration
+            result['load'] += processor.load_average
+
+        return result
 
 
 class FirstProcessAllocationStrategy(BaseProcessAllocationStrategy):
@@ -98,6 +116,7 @@ class FirstProcessAllocationStrategy(BaseProcessAllocationStrategy):
                 processor = self.get_random_processor(current_processor)
                 if not processor.is_overload:
                     processor.add(process)
+                    processor.qua_migration += 1
                     break
             else:
                 current_processor.add(process)
@@ -112,6 +131,7 @@ class SecondProcessAllocationStrategy(BaseProcessAllocationStrategy):
             processor = self.get_random_processor()
             if processor.is_overload:
                 self.add_process_to_free_random_processor()
+                processor.qua_migration += 1
             else:
                 process = self.query.pop(0)
                 processor.add(process)
@@ -128,7 +148,8 @@ class SecondProcessAllocationStrategy(BaseProcessAllocationStrategy):
             process = self.query.pop(0)
             random_processor.add(process)
         except IndexError:
-            print 'All processors are overload'
+            pass
+            # print 'All processors are overload'
 
 
 class ThirdProcessAllocationStrategy(BaseProcessAllocationStrategy):
@@ -159,4 +180,5 @@ class ThirdProcessAllocationStrategy(BaseProcessAllocationStrategy):
             process = self.query.pop(0)
             random_processor.add(process)
         except IndexError:
-            print 'All processors are overload'
+            pass
+            # print 'All processors are overload'
